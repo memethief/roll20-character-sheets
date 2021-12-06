@@ -16,7 +16,7 @@
         ;
 }
 .sheet-runner .sheet-block {
-    display: grid;
+    /* display: grid; */
     background-color:#F9D080;
     border-start-start-radius: 16px 100%;
     border-end-end-radius: 16px 100%;
@@ -58,6 +58,7 @@
     white-space: nowrap;
 }
 
+/* General sheet input elements should be full-width */
 .sheet-block label input[type=text],
 .sheet-block label input[type=number],
 .sheet-block label textarea,
@@ -90,4 +91,42 @@
 {
     background: #F9BE4A;
     box-shadow: 0px 0px 7px 0px #000000 inset;
+}
+
+/* Appearance textarea should be about 4 lines high */
+.sheet-appearance textarea {
+    height: 9ex;
+    height: 4lh; /* Forward-compatible to CSS Level 4 */
+}
+
+/* Question answer textareas should be about 4 lines high */
+.sheet-questions textarea {
+    height: 9ex;
+    height: 4lh; /* Forward-compatible to CSS Level 4 */
+}
+
+/* Repeated questions section */
+.charsheet .repcontrol[data-groupname=repeating_question] button.repcontrol_edit, 
+.charsheet .repcontrol[data-groupname=repeating_question] button.repcontrol_add {
+  font-family: "Special Elite";
+  font-weight: 700;
+  font-size: 1.1em;
+}
+.charsheet .repcontainer[data-groupname=repeating_question] {
+  width: 100%;
+}
+.charsheet .repcontainer[data-groupname=repeating_question] > .repitem {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  flex-flow: wrap row;
+}
+.charsheet .repcontainer[data-groupname=repeating_question] > .repitem .repcontrol_del {
+  font-family: "Pictos";
+  font-size: 1.1em;
+  padding: 3px 7px 2px;
+}
+.charsheet .repcontainer[data-groupname=repeating_question] > .repitem .repcontrol_move {
+  font-size: 1.3em;
+  padding: 3px 7px;
 }

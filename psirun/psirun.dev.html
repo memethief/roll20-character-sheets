@@ -1,0 +1,197 @@
+<!doctype html>
+    <html><head>
+        <title>Psi*Run sheet dev</title>
+<!-- copied from Roll20 -->
+        <link rel="stylesheet" type="text/css" href="https://app.roll20.net/css/themes/bootstrap/jquery-ui-1.8.16.custom.css?1636476831">
+        <link rel="stylesheet" type="text/css" href="https://app.roll20.net/assets/base.css?1638286704">
+        <!-- <link rel='stylesheet' type='text/css' href='/assets/app.css?1638286704' /> -->
+        <link rel="stylesheet" type="text/css" href="https://app.roll20.net/css/charsheet.css?1637254378">
+
+        <link href="https://fonts.googleapis.com/css?family=Patrick+Hand|Contrail+One|Shadows+Into+Light|Candal&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+        <script type="text/javascript">
+            const d20 = {
+                characterId: "-MhjVvD5kXkxqBy55waz",
+            };
+            window.d20 = d20;
+        </script>
+        <script type="text/javascript" src="https://app.roll20.net/v2/js/jquery-1.9.1.js?1636476832"></script>
+        <script type="text/javascript" src="https://app.roll20.net/js/jquery-ui.1.9.0.custom.min.js?1636476831"></script>
+        <script type="text/javascript" src="https://app.roll20.net/js/jquery.ui.touch.js?1636476831"></script>
+
+        <script type="text/javascript" src="https://app.roll20.net/js/d20/charsheetjs/view/attribute_tab.js?1636476831"></script>
+        <!-- <script type="text/javascript" src="https://app.roll20.net/js/d20/charsheetjs/view/draggables.js?1637254378"></script> -->
+
+        <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<!-- end copied from Roll20 -->
+        <link rel="stylesheet" type="text/css" href="psirun.css" />
+        <style type="text/css">
+            .ui-dialog .charsheet .repcontainer .repitem .itemcontrol {
+                display: initial;
+                background-color: initial;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="ui-dialog">
+        <div class="largedialog characterviewer">
+        <div class="charactersheet tab-pane charsheet lang-undefined">
+<!-- END DEV SECTION -->
+<script type="text/worker">
+
+on("sheet:opened", function(eventInfo){
+    setAttrs({
+        psiprompt: getTranslationByKey("ask-using-psi-power"),
+        harmprompt: getTranslationByKey("ask-risking-harm"),
+        yesanswer: getTranslationByKey("yes"),
+        noanswer: getTranslationByKey("no"),
+        rollquery: "(([[@{baseroll}]])+?{@{psiprompt}|@{yesanswer},1|@{noanswer},0}+?{@{harmprompt}|@{yesanswer},1|@{noanswer},0})d6kl[[([[@{baseroll}]])+?{@{psiprompt}}+?{@{harmprompt}}+(@{drophigh})]]dl[[@{droplow}]]sd"
+    });
+});
+
+</script>
+<div class="sheet-runner">
+    <div class="sheet-block sheet-name">
+        <label>
+            <span data-i18n="runner-name">Runner's Name</span>
+            <input type="text" name="attr_character_name"
+                placeholder="Your character's name"
+                data-i18n-placeholder="runner-name-placeholder"
+                value="Pepto"/>
+        </label>
+    </div>
+    <div class="sheet-block sheet-age">
+        <label>
+            <span data-i18n="apparent-age">Apparent Age</span>
+            <input type="number" name="attr_age" min="0" value="25" />
+        </label>
+    </div>
+    <div class="sheet-block sheet-power">
+        <label>
+            <span data-i18n="psi-power">Psi Power</span>
+            <input type="text" name="attr_psi_power"
+                placeholder="Your character's psi power"
+                data-i18n-placeholder="psi-power-placeholder" 
+                value="I can see through walls" />
+        </label>
+    </div>
+    <div class="sheet-block sheet-appearance">
+        <label>
+            <span><span data-i18n="in-the-mirror...">When I look in the mirror, I see...</span></span>
+            <textarea name="attr_appearance">A face caked with dirt. Matted hair. A torn blue jumpsuit with a logo that reads "JPL".</textarea>
+        </label>
+    </div>
+    <div class="sheet-block sheet-roll">
+        <div>
+            <input type="hidden" name="attr_baseroll" value="4 - {@{harm},0}kh1" disabled="true"/>
+            <input type="hidden" name="attr_droplow" value="1 - {(@{harm}*@{harm}),0}kh1" disabled="true"/>
+            <input type="hidden" name="attr_drophigh" value="{@{harm},0}kl1" disabled="true"/>
+            <span style="display: none" data-i18n="ask-using-psi-power">Are you using your psi power?</span>
+            <span style="display: none" data-i18n="ask-risking-harm">Are you risking harm to anyone?</span>
+            <span style="display: none" data-i18n="yes">Yes</span>
+            <span style="display: none" data-i18n="no">No</span>
+            <button type="roll" name="roll_risk" value="/roll @{rollquery}" data-i18n="take-a-risk">Take a Risk</button>
+        </div>
+    </div>
+    <div class="sheet-block sheet-harm">
+        <strong><span data-i18n="harm">Harm</span></strong>
+        <label>
+            <input type="radio" name="attr_harm" value="0" checked />
+            <span data-i18n="unimpaired">I'm unimpaired</span>
+        </label>
+        <label>
+            <input type="radio" name="attr_harm" value="1"/>
+            <span data-i18n="impaired">I'm impaired!</span>
+        </label>
+        <label>
+            <input type="radio" name="attr_harm" value="-1" />
+            <span data-i18n="doubly-impaired">I'm doubly impaired!</span>
+        </label>
+    </div>
+    <div class="sheet-block sheet-questions">
+        <strong><span data-i18n="i-have-questions...">I Have Questions...</span></strong>
+        <fieldset class="repeating_question" style="display: none;">
+            <label>
+                <span data-i18n="question">Question</span>
+                <input type="text"  name="attr_question"
+                    placeholder="your question"
+                    data-i18n-placeholder="question-placeholder"
+                    value="Who implanted this microchip in my hand?" />
+            </label>
+            <label>
+                <span data-i18n="answer">Answer</span>
+                <textarea name="attr_answer"
+                    placeholder="the question's answer"
+                    data-i18n-placeholder="answer-placeholder"></textarea>
+            </label>
+        </fieldset> 
+        <!-- what the user sees -->
+        <div class="repcontainer" data-groupname="repeating_question">
+            <div class="repitem">
+                <div class="itemcontrol">
+                    <button class="btn btn-danger pictos repcontrol_del">#</button>
+                    <a class="btn repcontrol_move">≡</a>
+                </div>
+                <!-- my-repeating-section HTML -->
+                <label>
+                    <input type="text"  name="attr_question"
+                        placeholder="your question"
+                        aria-label="Question"
+                        data-i18n-placeholder="question-placeholder"
+                        data-i18n-aria-label="question"
+                        value="Who implanted this microchip in my hand?" />
+                </label>
+                <label>
+                    <span data-i18n="answer">Answer</span>
+                    <textarea name="attr_answer"
+                        placeholder="the question's answer"
+                        aria-label="Answer"
+                        data-i18n-placeholder="answer-placeholder"
+                        data-i18n-aria-label="answer"></textarea>
+                </label>
+            </div>
+            <div class="repitem">
+                <div class="itemcontrol">
+                    <button class="btn btn-danger pictos repcontrol_del">#</button>
+                    <a class="btn repcontrol_move">≡</a>
+                </div>
+                <!-- my-repeating-section HTML -->
+                <label>
+                    <span data-i18n="question">Question</span>
+                    <input type="text"  name="attr_question"
+                        placeholder="your question"
+                        data-i18n-placeholder="question-placeholder"/>
+                </label>
+                <label>
+                    <span data-i18n="answer">Answer</span>
+                    <textarea name="attr_answer"
+                        placeholder="the question's answer"
+                        data-i18n-placeholder="answer-placeholder"></textarea>
+                </label>
+            </div>
+            <!-- there will be a div.repitem for each item the user has actually added to the sheet -->
+        </div>
+        <div class="repcontrol" data-groupname="repeating_question">
+            <button class="btn repcontrol_edit">Modify</button>
+            <button class="btn repcontrol_add">+Add</button>
+        </div>
+        <!-- end what the user sees -->
+    </div>
+    <div class="sheet-block sheet-endgame">
+        <label>
+            <span data-i18n="endgame">Endgame</span>
+            <select name="attr_endgame">
+                <option selected data-i18n="your-character-endgame">What is your character's endgame?</option>
+                <option data-i18n="trapped">Trapped</option>
+                <option data-i18n="home">Home</option>
+                <option data-i18n="hidden">Hidden</option>
+                <option data-i18n="on-a-quest">On a quest</option>
+                <option data-i18n="lost">Lost</option>
+                <option data-i18n="turning-the-tables">Turning the tables</option>
+                <option data-i18n="making-a-discovery">Making a discovery</option>
+            </select>
+        </label>
+    </div>
+</div>
+<!-- BEGIN DEV SECTION -->
+</div></div></div></body></html>

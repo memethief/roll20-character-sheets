@@ -16,7 +16,6 @@
         ;
 }
 .sheet-runner .sheet-block {
-    /* display: grid; */
     background-color:#F9D080;
     border-start-start-radius: 16px 100%;
     border-end-end-radius: 16px 100%;

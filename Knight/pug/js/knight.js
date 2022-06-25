@@ -235,6 +235,7 @@ on('change:armure', async (newArmure) => {
     MALWarmasterImpGPersonnel: 0,
     MALRogueGhost: 0,
     rogueGhost: 0,
+    bardChangeling: 0,
     MALBarbarianGoliath: 0,
     slotTeteMax: sTete,
     slotTorseMax: sTorse,
@@ -329,9 +330,9 @@ on('change:cdfPJModif change:barbarianGoliath change:MALBarbarianGoliath change:
   const goliath = +attrs.barbarianGoliath;
   const goliathMAL = +attrs.MALBarbarianGoliath;
 
-  const corpMetal = attrs.sorcererMMCorpMetal;
+  const corpMetal = +attrs.sorcererMMCorpMetal;
   const CM150PG = attrs.sorcerer150PG;
-  const CM250PG = attrs.sorcererMM250PG;
+  const CM250PG = +attrs.sorcererMM250PG;
 
   const warmasterForce = attrs.warmasterImpForce;
   const warmasterForcePers = +attrs.warmasterImpFPersonnel;
@@ -340,6 +341,8 @@ on('change:cdfPJModif change:barbarianGoliath change:MALBarbarianGoliath change:
   const warmasterForcePersMAL = +attrs.MALWarmasterImpFPersonnel;
 
   let total = max + modif;
+
+  log(corpMetal);
 
   switch (armure) {
     case 'barbarian':
@@ -350,7 +353,7 @@ on('change:cdfPJModif change:barbarianGoliath change:MALBarbarianGoliath change:
       if (corpMetal !== 0 || CM250PG !== 0) {
         total += 2;
 
-        if (CM150PG !== 0) total += 2;
+        if (CM150PG !== '0') total += 2;
       }
       break;
 
@@ -840,7 +843,7 @@ on('change:shamanNbreTotem', async () => {
 
 // GESTION DES ASPECTS ET CARACTERISTIQUES
 // Chair
-on('change:deplacement change:force change:endurance change:santeModif change:santeODBonus', async () => {
+on('change:deplacement change:force change:endurance change:santeModif change:santeODBonus sheet:opened', async () => {
   const attrs = await getAttrsAsync(['fichePNJ', 'chair', 'deplacement', 'force', 'endurance', 'santeModif', 'santeODBonus']);
 
   const fiche = +attrs.fichePNJ;
@@ -865,7 +868,7 @@ on('change:deplacement change:force change:endurance change:santeModif change:sa
   await setAttrsAsync({ santepj_max: total });
 });
 // Bête
-on('change:fichePNJ change:armure change:hargne change:combat change:instinct change:calODHar change:calODCom change:calODIns', async () => {
+on('change:fichePNJ change:armure change:hargne change:combat change:instinct change:calODHar change:calODCom change:calODIns sheet:opened', async () => {
   const attrs = await getAttrsAsync(['fichePNJ', 'armure', 'bete', 'hargne', 'combat', 'instinct', 'calODHar', 'calODCom', 'calODIns']);
 
   const fiche = +attrs.fichePNJ;
@@ -904,7 +907,7 @@ on('change:fichePNJ change:armure change:hargne change:combat change:instinct ch
   await setAttrsAsync({ defense: total });
 });
 // Machine
-on('change:fichePNJ change:armure change:tir change:savoir change:technique change:calODTir change:calODSav change:calODTec', async () => {
+on('change:fichePNJ change:armure change:tir change:savoir change:technique change:calODTir change:calODSav change:calODTec sheet:opened', async () => {
   const attrs = await getAttrsAsync(['fichePNJ', 'armure', 'machine', 'tir', 'savoir', 'technique', 'calODTir', 'calODSav', 'calODTec']);
 
   const fiche = +attrs.fichePNJ;
@@ -1066,7 +1069,7 @@ on('change:monk150PG change:monk250PG sheet:opened', async () => {
 on('change:priest200PG', async () => {
   const attrs = await getAttrsAsync(['priest200PG']);
 
-  const PG200 = +attrs.priest200PG;
+  const PG200 = attrs.priest200PG;
 
   let contactDice = 3;
   let distanceDice = 2;
@@ -1122,7 +1125,7 @@ on('change:wizard150PG sheet:opened', async () => {
 on('change:wizard250PG sheet:opened', async () => {
   const attrs = await getAttrsAsync(['wizard250PG']);
 
-  const PG250 = +attrs.wizard250PG;
+  const PG250 = attrs.wizard250PG;
 
   let portee = i18n_porteeCourte;
 
@@ -1956,12 +1959,15 @@ on('clicked:selectionMALWarmasterWarlord', async () => {
 on('clicked:selectionMALPsion', async () => {
   const attrs = await getAttrsAsync([
     'listeModeMALPsion',
+    'listeModeMALPsion2',
   ]);
 
   const choix = parseInt(attrs.listeModeMALPsion, 10) || 0;
+  const choix2 = parseInt(attrs.listeModeMALPsion2, 10) || 0;
 
   await setAttrsAsync({
     malpsionmode: choix,
+    malpsionmode2: choix2,
     popup: 0,
   });
 });
@@ -3292,6 +3298,8 @@ on('clicked:importKNPCG', () => {
 
         let raw = result.raw - lAspects.bête.mineur - lAspects.bête.majeur;
 
+        if (lAspects.bête.majeur > 0) { raw -= bete.score; }
+
         if (raw < 0) { raw = 0; }
 
         newrowattrsW[`${path + newrowidW}_ArmeCaC`] = result.name;
@@ -3321,7 +3329,9 @@ on('clicked:importKNPCG', () => {
         const name = effects[cle].name.split(' ', length).join(' ').toLowerCase();
         const value2 = eff[length] || 0;
 
-        switch (name) {
+        const uEff = name === 'ignore' || name === 'perce' || name === 'dégâts' ? `${name} ${eff[1]}` : name;
+
+        switch (uEff) {
           case 'anathème':
             newrowattrsW[`${path + newrowidW}_anatheme`] = '{{anatheme=Anathème}}';
             break;
@@ -3414,7 +3424,7 @@ on('clicked:importKNPCG', () => {
             newrowattrsW[`${path + newrowidW}_ignoreArmure`] = '{{ignoreArmure=Ignore Armure}}';
             break;
 
-          case 'ignore champ de force':
+          case 'ignore CdF':
             newrowattrsW[`${path + newrowidW}_ignoreCdF`] = '{{ignoreCdF=Ignore Champs de Force}}';
             break;
 
@@ -3461,7 +3471,7 @@ on('clicked:importKNPCG', () => {
             newrowattrsW[`${path + newrowidW}_penetrantValue`] = Number(value2);
             break;
 
-          case 'perce Armure':
+          case 'perce armure':
             newrowattrsW[`${path + newrowidW}_perceArmure`] = '{{perceArmure=^{perce-armure} @{perceArmureValue}}}';
             newrowattrsW[`${path + newrowidW}_perceArmureValue`] = Number(value2);
             break;
@@ -3608,7 +3618,7 @@ on('sheet:opened', async () => {
   await setAttrsAsync({
     bardEffetAttSpe: bard.join(' / '),
     berserkIlluminationBlazePortee: getTranslationByKey('portee-contact'),
-    berserkIlluminationBeaconPortee: getTranslationByKey('portee-contact'),
+    berserkIlluminationBeaconPortee: getTranslationByKey('portee-courte'),
     berserkIlluminationProjectorPortee: getTranslationByKey('portee-courte'),
     berserkIlluminationLighthousePortee: getTranslationByKey('portee-courte'),
     berserkIlluminationLanternPortee: getTranslationByKey('portee-courte'),
